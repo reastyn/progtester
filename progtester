@@ -1,0 +1,52 @@
+#!/bin/bash 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NOCOLOR='\033[0m'
+
+if [ -z "$1" ]; then
+	echo -e "${RED}You haven't specified any folder!${NOCOLOR}"
+	exit 1
+fi
+
+if [ ! -d "$1" ]; then
+  	echo -e "${RED}Specified argument is not a folder!${NOCOLOR}"
+	exit 1
+fi
+
+if [ ! -d "$1/tests" ]; then
+  	echo -e "${RED}Specified folder has no tests!${NOCOLOR}"
+	exit 1
+fi
+
+g++ -x c -Wall -pedantic $1/main.c -g -o $1/main
+if [ $? != 0 ]; then
+	echo -e "${RED}Compiling went wrong, please fix your code!${NOCOLOR}"
+	exit 5
+fi
+PROGRAM=$1/main
+
+for TEST_FILE in $1/tests/*_in.txt; do
+	echo -n "> Testing $TEST_FILE "
+
+	# If colordiff is not installed
+	DIFF_COMMAND="colordiff"
+	if ! type "$DIFF_COMMAND" > /dev/null 2>&1; then
+		DIFF_COMMAND="diff"
+	fi
+	
+	DIFF=`${DIFF_COMMAND} ${TEST_FILE/in/out} <($PROGRAM < $TEST_FILE)`
+	if [ "$DIFF" == "" ]; then
+		echo -e "- ${GREEN}✔${NOCOLOR}"
+	else
+		echo -e "- ${RED}✖${NOCOLOR}"
+ 
+		echo "Input:"
+		cat $TEST_FILE
+		echo
+ 
+		echo "Output diff:"
+		echo "$DIFF"
+		echo
+	fi
+done
+
