@@ -2,6 +2,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NOCOLOR='\033[0m'
+NO_ERRORS=true
 
 if [ -z "$1" ]; then
 	echo -e "${RED}You haven't specified any folder!${NOCOLOR}"
@@ -38,6 +39,7 @@ for TEST_FILE in $1/tests/*_in.txt; do
 	if [ "$DIFF" == "" ]; then
 		echo -e "- ${GREEN}✔${NOCOLOR}"
 	else
+		NO_ERRORS=false
 		echo -e "- ${RED}✖${NOCOLOR}"
  
 		echo "Input:"
@@ -50,3 +52,8 @@ for TEST_FILE in $1/tests/*_in.txt; do
 	fi
 done
 
+if [ NO_ERRORS = true ]; then
+	echo -e "${GREEN}Tests worked, you can hand out main file to progtest.${NOCOLOR}"
+else
+	echo -e "${RED}Some tests failed. Try again..${NOCOLOR}"
+fi
