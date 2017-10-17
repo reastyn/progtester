@@ -14,6 +14,7 @@ It's in very early stage so any new Pull requests are welcomed!
 
 ## Usage
 ``progtester ./progtest_exercise_1``
+If you have colordiff installed progtester will use it instead of normal diff. It's better to clearly see what line is different.
 
 ## Installation
 Copy the progtest to your ``/usr/local/bin`` directory or place it wherever you want.
